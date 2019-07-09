@@ -1,16 +1,20 @@
-# Getting Started
-
-### Reference Documentation
-For further reference, please consider the following sections:
-
-* [Official Apache Maven documentation](https://maven.apache.org/guides/index.html)
-
-### Guides
-The following guides illustrate how to use some features concretely:
-
-* [Creating a Batch Service](https://spring.io/guides/gs/batch-processing/)
-
-
-### HowTo run an example
+## HowTo run an example
 - mvn clean install
 - java -jar target/batch-0.0.1-SNAPSHOT.jar
+
+## HowTo enable the MySQL schema for JobRepository
+- Spin-up the MySQL in Docker
+- Find the schema generation example **schema-mysql.sql** with `<Ctrl> + <Shift> + N`
+- Open the DB client (in my case `SQLectron`) and execute the sequence of steps:
+```
+create database spring_batch_test;
+USE spring_batch_test;
+
+<execute the whole schema-mysql.sql>
+```
+- Check that the schema is valid (as soon as jobs are done, there will be some records in this table)
+```
+USE spring_batch_test;
+
+select * from BATCH_JOB_EXECUTION;
+```

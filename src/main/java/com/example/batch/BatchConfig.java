@@ -15,11 +15,6 @@ import javax.sql.DataSource;
 @EnableBatchProcessing
 public class BatchConfig extends DefaultBatchConfigurer {
 
-    @Override
-    public void setDataSource(DataSource dataSource) {
-        //This BatchConfigurer ignores ny DataSource
-    }
-
     @Bean
     public Job helloWorldJob(JobBuilderFactory jobBuilders,
                              StepBuilderFactory stepBuilders) {
