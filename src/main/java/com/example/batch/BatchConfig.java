@@ -37,6 +37,11 @@ public class BatchConfig extends DefaultBatchConfigurer {
     private ApplicationArguments applicationArguments;
 
     @Bean
+    public JobLoggerListener jobLoggerListener() {
+        return new JobLoggerListener();
+    }
+
+    @Bean
     public JobParametersValidator helloWorldJobParamsValidator() {
         return parameters -> {
             final String message = parameters.getString("message");
@@ -62,6 +67,7 @@ public class BatchConfig extends DefaultBatchConfigurer {
     public Job helloWorldJob() {
         return jobBuilders.get("helloWorldJob")
                 .validator(helloWorldJobParamsValidator())
+                .listener(jobLoggerListener())
                 .start(printHelloWorldStep(stepBuilders))
                 .build();
     }
