@@ -1,10 +1,7 @@
 package com.example.batch;
 
 import com.google.common.collect.Iterables;
-import org.springframework.batch.core.Job;
-import org.springframework.batch.core.JobExecution;
-import org.springframework.batch.core.JobParametersBuilder;
-import org.springframework.batch.core.Step;
+import org.springframework.batch.core.*;
 import org.springframework.batch.core.configuration.annotation.DefaultBatchConfigurer;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
@@ -16,6 +13,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.util.StringUtils;
 
 import java.util.Arrays;
 import java.util.List;
@@ -38,6 +36,16 @@ public class BatchConfig extends DefaultBatchConfigurer {
     @Autowired
     private ApplicationArguments applicationArguments;
 
+    @Bean
+    public JobParametersValidator helloWorldJobParamsValidator() {
+        return parameters -> {
+            final String message = parameters.getString("message");
+            if (StringUtils.isEmpty(message)) {
+                throw new IllegalArgumentException("Message should not be null or empty");
+            }
+        };
+    }
+
     @Scheduled(fixedRate = 5000)
     public void run() throws Exception {
         String message = Iterables.getFirst(Arrays.asList(applicationArguments.getSourceArgs()), null);
@@ -53,6 +61,7 @@ public class BatchConfig extends DefaultBatchConfigurer {
     @Bean
     public Job helloWorldJob() {
         return jobBuilders.get("helloWorldJob")
+                .validator(helloWorldJobParamsValidator())
                 .start(printHelloWorldStep(stepBuilders))
                 .build();
     }
