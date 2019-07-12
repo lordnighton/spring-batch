@@ -42,6 +42,11 @@ public class BatchConfig extends DefaultBatchConfigurer {
     }
 
     @Bean
+    public StepLoggingListener stepLoggerListener() {
+        return new StepLoggingListener();
+    }
+
+    @Bean
     public JobParametersValidator helloWorldJobParamsValidator() {
         return parameters -> {
             final String message = parameters.getString("message");
@@ -75,6 +80,7 @@ public class BatchConfig extends DefaultBatchConfigurer {
     @Bean
     public Step printHelloWorldStep(StepBuilderFactory stepBuilders) {
         return stepBuilders.get("helloWorldStep")
+                .listener(stepLoggerListener())
                 .tasklet(helloTasklet()).build();
     }
 
